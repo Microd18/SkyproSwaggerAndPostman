@@ -2,43 +2,47 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
-
+@Service
 public class FacultyService {
-    //исправить
-    private long number = 0;
 
-    Map<Long, Faculty> facultyMap = new HashMap<>();
+    private final HashMap<Long, Faculty> faculties = new HashMap<>();
+    private long count = 0;
 
-    public void createFaculty(Faculty faculty) {
-        facultyMap.put(++number, faculty);
+    public Faculty addFaculty(Faculty faculty) {
+        faculty.setId(count++);
+        faculties.put(faculty.getId(), faculty);
+        return faculty;
     }
 
-    public void createFaculty(long id, String name, String colour) {
-        Faculty faculty = new Faculty(id, name, colour);
-        createFaculty(faculty);
+    public Faculty findFaculty(long id) {
+        return faculties.get(id);
     }
 
-    public Faculty returnFaculty(long number) {
-        return facultyMap.get(number);
+    public Faculty editFaculty(Faculty faculty) {
+        if (!faculties.containsKey(faculty.getId())) {
+            return null;
+        }
+        faculties.put(faculty.getId(), faculty);
+        return faculty;
     }
 
-    public void updateFaculty(long number, long id, String name, String colour) {
-        Faculty newFaculty = new Faculty(id, name, colour);
-        updateFaculty(number, newFaculty);
+    public Faculty deleteFaculty(long id) {
+        return faculties.remove(id);
     }
 
-    public void updateFaculty(long number, Faculty newFaculty) {
-        facultyMap.put(number, newFaculty);
+    public Collection<Faculty> findByColor(String color) {
+        ArrayList<Faculty> result = new ArrayList<>();
+        for (Faculty faculty : faculties.values()) {
+            if (Objects.equals(faculty.getColor(), color)) {
+                result.add(faculty);
+            }
+        }
+        return result;
     }
-
-    public void deleteFaculty(long number) {
-        facultyMap.remove(number);
-    }
-
-
 }

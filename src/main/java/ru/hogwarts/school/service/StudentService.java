@@ -3,39 +3,52 @@ package ru.hogwarts.school.service;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class StudentService {
 
-    private  long number = 0;
+    private Long lastId = 0L;
 
     Map<Long, Student> studentMap = new HashMap<>();
 
-    public void createStudent(Student student) {
-        studentMap.put(++number, student);
+    public Student addStudent(Student student) {
+        student.setId(++lastId);
+        studentMap.put(lastId, student);
+        return student;
     }
 
-    public void createStudent(long id, String name, int age) {
+    public Student addStudent(Long id, String name, int age) {
         Student student = new Student(id, name, age);
-        createStudent(student);
+        return addStudent(student);
     }
 
-    public Student returnStudent(long number) {
-        return studentMap.get(number);
+    public Student findStudent(Long lastId) {
+        return studentMap.get(lastId);
     }
 
-    public void updateStudent(long number, long id, String name, int age) {
-        Student newStudent = new Student(id, name, age);
-        updateStudent(number, newStudent);
+    public Student editStudent(Student student) {
+        if (!studentMap.containsKey(student.getId())) {
+            return null;
+        }
+        studentMap.put(student.getId(), student);
+        return student;
     }
 
-    public void updateStudent(long number, Student newStudent) {
-        studentMap.put(number, newStudent);
+    public Student deleteStudent(Long lastId) {
+        return studentMap.remove(lastId);
     }
 
-    public void deleteStudent(long number) {
-        studentMap.remove(number);
+    public Collection<Student> findByAge(int age) {
+        ArrayList<Student> result = new ArrayList<>();
+        for (Student student : studentMap.values()) {
+            if (student.getAge() == age) {
+                result.add(student);
+            }
+        }
+        return result;
     }
 }
