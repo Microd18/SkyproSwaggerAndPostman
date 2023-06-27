@@ -54,4 +54,3 @@ public class FacultyController {
     }
 
 }
-//1:04
